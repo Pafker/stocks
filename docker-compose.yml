@@ -3,7 +3,9 @@ version: "3.7"
 services:
   http-service:
     build:
-        context: ./app/http-service
+      context: ./app/http-service
+    volumes:
+      - ./app/http-service:/app:delegated
     ports:
       - "3000:3000"
     networks: 
