@@ -1,12 +1,16 @@
-import { serve } from "../deps.ts";
+import { Application, Router } from '../deps.ts'
+const port = 3000;
 
-const PORT = 3000;
-
-const s = serve({ port: 3000 });
-
-const body = new TextEncoder().encode("Deno Hello World\n");
-
-console.log(`Server started on port ${PORT}`);
-for await (const req of s) {
-  req.respond({ body });
+const app = new Application();
+const router = new Router();
+const getProd = ({ response }: { response: any }) => {
+  response.body = {
+      success: true,
+      data: [1,2,3]
+  }
 }
+router.get('/api', getProd);
+app.use(router.routes());
+
+console.log(`Server running on port ${port}`)
+await app.listen({ port })
