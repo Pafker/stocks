@@ -1,8 +1,9 @@
-import { Application, Router } from '../../deps.ts';
+import { Application, Router, logger } from '../../deps.ts';
 
 export async function startServer(PORT = 3000): Promise<void> {
     try {
         const app = new Application();
+
         const router = new Router();
         const getProd = ({ response }: { response: any }) => {
             response.body = {
@@ -13,9 +14,9 @@ export async function startServer(PORT = 3000): Promise<void> {
         router.get('/api', getProd);
         app.use(router.routes());
         app.listen({ port: PORT });
-        console.log(`Server running on port ${PORT}`);
+        logger.info(`Server running on port ${PORT}`);
     } catch (err) {
-        console.log('Error: ', err);
+        logger.error('Error: ', err);
     }
     return;
 }
