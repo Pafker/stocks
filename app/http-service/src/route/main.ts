@@ -9,4 +9,5 @@ const viewRenderer = new ViewRenderer();
 export const router = new Router();
 
 router.get(Routes.Stocks, stocksController.getStocks);
+router.post(Routes.Stocks, stocksController.addStock);
 router.get(Routes.Static, viewRenderer.getView);
