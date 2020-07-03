@@ -10,11 +10,29 @@ export class ViewRenderer {
                     <h1 style="color: red"=>Stocks</h1>
                     <br>
                     <p>Stocks website</p>
-                    <form action="/stocks" enctype="multipart/form-data" method="post">
-                        <label for="name">First name:</label><br>
-                        <input type="text" id="name" name="name"><br>
-                        <input type="submit" value="Submit">
-                    </form>
+                    <br>
+
+                    <label for="test">Stock name:</label><br>
+                    <input type="text" id="stockName" name="stockName">
+                    <button onclick="addStock()">Add</button>
+                    <p id="demo"></p>
+
+                    <script>
+                    function addStock() {
+                        const stockName = document.getElementById("stockName").value;
+
+                        const opts = {
+                            method: 'POST',
+                            body: JSON.stringify({"name": stockName})
+                        };
+                        fetch('/stocks', opts).then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (body) {
+                            document.getElementById("demo").innerHTML = JSON.stringify(body);
+                        });
+                    }
+                    </script>
                 </body>
             </html>
         `;

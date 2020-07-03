@@ -10,11 +10,12 @@ export class StocksController {
 
     public async addStock (context: RouterContext): Promise<void> {
         const body = await context.request.body();
-        const formData = await body.value.read();
+        const parsedBody = JSON.parse(body.value);
+
         context.response.body = {
             success: true,
-            data: [1,2,3,4, 5],
-            gosciu: formData.fields.name,
+            data: [1,2,3,4],
+            gosciu: {name: parsedBody.name, value: 14},
         }
     }
 }
