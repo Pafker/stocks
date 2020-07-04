@@ -4,11 +4,22 @@ services:
   http-service:
     build:
       context: ./app/http-service
+    env_file:
+      - ./app/http-service/.env
     volumes:
       - ./app/http-service:/app:delegated
     ports:
       - "3000:3000"
     networks: 
+      - stocks
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    expose: 
+      - 5672
+    ports:
+      - "15672:15672"
+    hostname: rabbit
+    networks:
       - stocks
 
 networks:
