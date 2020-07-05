@@ -1,12 +1,20 @@
 import { connectToMQ } from "../../server/mqConnect.ts";
 import { AmqpChannel } from '../../../deps.ts'
+import { StocksMQEventType } from "../../api/Stocks/Stocks.interface.ts";
+
+interface MQMessage<T> {
+    type: StocksMQEventType;
+    payload: T;
+}
+
+export type MQPayload = {};
 
 class MqSender {
     private channel!: AmqpChannel;
     private queueName: string;
 
     constructor(){
-        this.queueName = "my.queue";
+        this.queueName = "stocks.queue";
     }
 
     public async init(): Promise<void> {
@@ -14,11 +22,11 @@ class MqSender {
         await this.channel.declareQueue({ queue: this.queueName });
     }
 
-    public async publish(): Promise<void> {
+    public async publish(msg: MQMessage<MQPayload>): Promise<void> {
         await this.channel.publish(
             { routingKey: this.queueName },
             { contentType: "application/json" },
-            new TextEncoder().encode(JSON.stringify({ foo: "bar" })),
+            new TextEncoder().encode(JSON.stringify(msg)),
         );
     }
 }

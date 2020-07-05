@@ -1,5 +1,10 @@
 import { RouterContext } from '../../../deps.ts';
-import { MQSender } from '../../service/mq/mqSender.ts';
+import { MQSender, MQPayload } from '../../service/mq/mqSender.ts';
+import { StocksMQEventType, AddStockLocals } from './Stocks.interface.ts';
+
+interface StockMQPayload extends MQPayload {
+    stockName: string;
+}
 
 export class StocksController {
     public getStocks (context: RouterContext): void {
@@ -11,8 +16,11 @@ export class StocksController {
 
     public async addStock (context: RouterContext): Promise<void> {
         const body = await context.request.body();
-        const parsedBody = JSON.parse(body.value);
-        await MQSender.publish();
+        const parsedBody: AddStockLocals = JSON.parse(body.value);
+
+        const payload: StockMQPayload = { stockName: parsedBody.name };
+        await MQSender.publish({ type: StocksMQEventType.STOCK_ADDED, payload });
+        
         context.response.body = {
             success: true,
             data: [1,2,3,4],
