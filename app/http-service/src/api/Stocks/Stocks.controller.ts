@@ -1,4 +1,4 @@
-import { RouterContext } from '../../../deps.ts';
+import { RouterContext, Status } from '../../../deps.ts';
 import { MQSender, MQPayload } from '../../service/mq/mqSender.ts';
 import { StocksMQEventType, AddStockLocals } from './Stocks.interface.ts';
 
@@ -21,10 +21,7 @@ export class StocksController {
         const payload: StockMQPayload = { stockName: parsedBody.name };
         await MQSender.publish({ type: StocksMQEventType.STOCK_ADDED, payload });
         
-        context.response.body = {
-            success: true,
-            data: [1,2,3,4],
-            gosciu: {name: parsedBody.name, value: 14},
-        }
+        context.response.status = Status.Created;
+        context.response.body = payload;
     }
 }

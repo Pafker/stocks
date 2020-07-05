@@ -16,7 +16,6 @@ export class ViewRenderer {
                     <input type="text" id="stockName" name="stockName">
                     <button onclick="addStock()">Add</button>
                     <p id="demo2"></p>
-                    <p id="demo"></p>
 
                     <script>
                     function addStock() {
@@ -29,9 +28,7 @@ export class ViewRenderer {
                         fetch('/stocks', opts).then(function (response) {
                             return response.json();
                         })
-                        .then(function (body) {
-                            document.getElementById("demo").innerHTML = JSON.stringify(body);
-                        });
+                        .then(function (body) { });
                     }
 
                     function getStocks() {
