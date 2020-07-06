@@ -1,5 +1,5 @@
 import { connectToMQ } from "../../server/mqConnect.ts";
-import { AmqpChannel } from '../../../deps.ts'
+import { AmqpChannel, BasicDeliver, BasicProperties } from '../../../deps.ts'
 
 class MqConsumer {
     private channel!: AmqpChannel;
@@ -14,13 +14,15 @@ class MqConsumer {
         await this.channel.declareQueue({ queue: this.queueName });
         await this.channel.consume(
             { queue: this.queueName },
-            async (args, props, data) => {
-                console.log(JSON.stringify(args));
-                console.log(JSON.stringify(props));
-                console.log(new TextDecoder().decode(data));
+            async (args: BasicDeliver, _props: BasicProperties, data: Uint8Array) => {
+                await this.handleMessage(JSON.parse(new TextDecoder().decode(data)));
                 await this.channel.ack({ deliveryTag: args.deliveryTag });
             },
         );
+    }
+
+    private async handleMessage(data: {[x: string]: any}): Promise<void> {
+        console.log(data);
     }
 }
 
