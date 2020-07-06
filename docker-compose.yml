@@ -12,6 +12,15 @@ services:
       - "3000:3000"
     networks: 
       - stocks
+  stocks-service:
+    build:
+      context: ./app/stocks-service
+    env_file:
+      - ./app/stocks-service/.env
+    volumes:
+      - ./app/stocks-service:/app:delegated
+    networks: 
+      - stocks
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
     expose: 
