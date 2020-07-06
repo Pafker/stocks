@@ -30,6 +30,16 @@ services:
     hostname: rabbit
     networks:
       - stocks
+  mongo:
+    image: mvertes/alpine-mongo
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - stocks
 
 networks:
   stocks: {}
+volumes:
+  mongo-data: ~
