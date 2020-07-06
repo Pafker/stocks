@@ -1,6 +1,13 @@
 import { connectToMQ } from "../../server/mqConnect.ts";
 import { AmqpChannel, BasicDeliver, BasicProperties } from '../../../deps.ts'
 
+interface MQMessage<T> {
+    type: string;
+    payload: T;
+}
+
+export type MQPayload = {};
+
 class MqConsumer {
     private channel!: AmqpChannel;
     private queueName: string;
@@ -21,7 +28,7 @@ class MqConsumer {
         );
     }
 
-    private async handleMessage(data: {[x: string]: any}): Promise<void> {
+    private async handleMessage(data: MQMessage<MQPayload>): Promise<void> {
         console.log(data);
     }
 }
