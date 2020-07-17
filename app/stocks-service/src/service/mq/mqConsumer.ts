@@ -1,8 +1,10 @@
 import { connectToMQ } from "../../server/mqConnect.ts";
-import { AmqpChannel, BasicDeliver, BasicProperties } from '../../../deps.ts'
+import { AmqpChannel, BasicDeliver, BasicProperties } from '../../../deps.ts';
+import { StocksMQEventType, StockPayload } from "../../api/Stocks/Stocks.interface.ts";
+import { StocksService } from "../../api/Stocks/Stocks.service.ts";
 
 interface MQMessage<T> {
-    type: string;
+    type: StocksMQEventType;
     payload: T;
 }
 
@@ -29,7 +31,11 @@ class MqConsumer {
     }
 
     private async handleMessage(data: MQMessage<MQPayload>): Promise<void> {
-        console.log(data);
+        const service = new StocksService();
+        switch(data.type) {
+            case StocksMQEventType.STOCK_ADDED:
+                await service.addStock((data as MQMessage<StockPayload>).payload.stockName);
+        }
     }
 }
 
