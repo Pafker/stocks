@@ -17,6 +17,8 @@ services:
       context: ./app/stocks-service
     env_file:
       - ./app/stocks-service/.env
+    depends_on:
+      - redis
     volumes:
       - ./app/stocks-service:/app:delegated
     networks: 
@@ -30,12 +32,14 @@ services:
     hostname: rabbit
     networks:
       - stocks
-  mongo:
-    image: mvertes/alpine-mongo
+  redis:
+    image: redis:6-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
     volumes:
-      - mongo-data:/data/db
+      - redis-data:/data
     ports:
-      - 27017:27017
+      - 6379:6379
     networks:
       - stocks
 
@@ -43,3 +47,4 @@ networks:
   stocks: {}
 volumes:
   mongo-data: ~
+  redis-data:
