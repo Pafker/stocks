@@ -28,7 +28,7 @@ services:
       context: ./app/finnhub-service
     env_file:
       - ./app/finnhub-service/.env
-    depends_on: :
+    depends_on:
       - redis
     volumes:
       - ./app/finnhub-service:/app:delegated

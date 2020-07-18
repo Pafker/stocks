@@ -5,8 +5,8 @@ RUN apk add --no-cache git mercurial \
     && apk del git mercurial
 
 WORKDIR /app
-#COPY go.mod go.sum ./
-#RUN go mod download
+COPY go.mod go.sum ./
+RUN go mod download
 COPY ./ /app
 
 ENTRYPOINT CompileDaemon --build="go build app.go" --command=./app
