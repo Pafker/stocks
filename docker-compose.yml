@@ -23,6 +23,18 @@ services:
       - ./app/stocks-service:/app:delegated
     networks: 
       - stocks
+  finnhub-service:
+    build:
+      context: ./app/finnhub-service
+    env_file:
+      - ./app/finnhub-service/.env
+    depends_on: :
+      - redis
+    volumes:
+      - ./app/finnhub-service:/app:delegated
+    networks:
+      - stocks
+    
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
     expose: 
