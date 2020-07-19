@@ -9,5 +9,5 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY ./ /app
 
-ENTRYPOINT CompileDaemon --build="go build app.go" --command=./app
+ENTRYPOINT CompileDaemon --build="go build src/app.go" --command=./app
 
