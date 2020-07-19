@@ -1,8 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"context"
+    "fmt"
+    "net/http"
+    "context"
+    "encoding/json"
 	
 	"github.com/go-redis/redis/v8"
 )
@@ -10,20 +12,24 @@ import (
 var ctx = context.Background()
 
 func main() {
-	rdb := redis.NewClient(&redis.Options{
+    http.HandleFunc("/stocks", GetStocks)
+    http.ListenAndServe(":3003", nil)
+}
+
+func GetStocks(w http.ResponseWriter, r *http.Request) {
+    rdb := redis.NewClient(&redis.Options{
         Addr:     "redis:6379",
         Password: "",
         DB:       0,
     })
-
-	key := "key";
-
-    val, err := rdb.Get(ctx, key).Result()
-	if err == redis.Nil {
-        fmt.Println(key, "does not exist")
+    
+    val, err := rdb.Keys(ctx, "*").Result()
+    if err == redis.Nil {
+        fmt.Println("does not exist")
     } else if err != nil {
         panic(err)
-    } else {
-        fmt.Println("key", val)
     }
+    json, _ := json.Marshal(val)
+
+    fmt.Fprintf(w, "%s", json)
 }

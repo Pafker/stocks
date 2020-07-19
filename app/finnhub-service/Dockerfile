@@ -1,5 +1,7 @@
 FROM golang:1.14-alpine
 
+EXPOSE 3003
+
 RUN apk add --no-cache git mercurial \
     && go get github.com/githubnemo/CompileDaemon \
     && apk del git mercurial
