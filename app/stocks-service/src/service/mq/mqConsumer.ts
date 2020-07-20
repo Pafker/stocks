@@ -35,6 +35,10 @@ class MqConsumer {
         switch(data.type) {
             case StocksMQEventType.STOCK_ADDED:
                 await service.addStock((data as MQMessage<StockPayload>).payload.stockName);
+                break;
+            case StocksMQEventType.STOCK_REMOVED:
+                await service.deleteStock((data as MQMessage<StockPayload>).payload.stockName);
+                break;
         }
     }
 }

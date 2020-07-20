@@ -4,18 +4,33 @@ export class ViewRenderer {
             <!DOCTYPE html>
             <html>
                 <head>
+                    <style>
+                    table {
+                        border-collapse: collapse;
+                        margin-top: 10px;
+                    }
+
+                    table, th, td {
+                        border: 1px solid black;
+                    }
+
+                    h1 {
+                        color: red;
+                    }
+                    </style>
                     <title>Stocks</title>
                 </head>
                 <body onload="getStocks()">
-                    <h1 style="color: red"=>Stocks</h1>
-                    <br>
+                    <h1>Stocks</h1>
                     <p>Stocks website</p>
                     <br>
 
-                    <label for="test">Stock name:</label><br>
+                    <label for="stockName">Stock name:</label><br>
                     <input type="text" id="stockName" name="stockName">
                     <button onclick="addStock()">Add</button>
-                    <p id="demo2"></p>
+
+                    <table>
+                    </table>
 
                     <script>
                     function addStock() {
@@ -28,7 +43,10 @@ export class ViewRenderer {
                         fetch('/stocks', opts).then(function (response) {
                             return response.json();
                         })
-                        .then(function (body) { });
+                        .then(function (body) {
+                            location.reload();
+                            return;
+                        });
                     }
 
                     function getStocks() {
@@ -39,7 +57,30 @@ export class ViewRenderer {
                             return response.json();
                         })
                         .then(function (body) {
-                            document.getElementById("demo2").innerHTML = JSON.stringify(body);
+                            let table = document.querySelector("table");
+
+                            for (let element of body) {
+                                let row = table.insertRow();
+                                let cell = row.insertCell();
+                                let text = document.createTextNode(element);
+                                cell.appendChild(text);
+
+                                let cell2 = row.insertCell();
+                                let button = document.createElement('button');
+                                button.textContent = 'remove';
+                                button.onclick = function(){
+                                    const opts = {
+                                        method: 'DELETE',
+                                    };
+                                    fetch('/stocks/' + element, opts).then(function (response) {
+                                        location.reload();
+                                        return;
+                                    });
+
+                                    return false;
+                                };
+                                cell2.appendChild(button);
+                            }
                         });
                     }
                     </script>

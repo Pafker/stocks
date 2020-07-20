@@ -26,4 +26,17 @@ export class StocksController {
         context.response.status = Status.Created;
         context.response.body = payload;
     }
+
+    public async deleteStock (context: RouterContext): Promise<void> {
+        const stockName = context.params.id;
+        if (!stockName) {
+            context.response.status = Status.BadRequest;
+            return;
+        }
+
+        const payload: StockMQPayload = { stockName };
+        await MQSender.publish({ type: StocksMQEventType.STOCK_REMOVED, payload });
+
+        context.response.status = Status.OK;
+    }
 }
