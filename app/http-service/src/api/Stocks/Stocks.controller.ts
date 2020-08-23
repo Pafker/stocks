@@ -18,7 +18,8 @@ export class StocksController {
 
     public async addStock (context: RouterContext): Promise<void> {
         const body = await context.request.body();
-        const parsedBody: AddStockLocals = JSON.parse(body.value);
+        const value = await body.value;
+        const parsedBody: AddStockLocals = JSON.parse(value);
 
         const payload: StockMQPayload = { stockName: parsedBody.name };
         await MQSender.publish({ type: StocksMQEventType.STOCK_ADDED, payload });
