@@ -13,6 +13,11 @@ import (
 
 var ctx = context.Background()
 
+type StockQuote struct {
+    Name string `json:"name"`
+    Quote finnhub.Quote `json:"quote"`
+}
+
 func main() {
     http.HandleFunc("/stocks", GetStocks)
     http.ListenAndServe(":3003", nil)
@@ -29,17 +34,25 @@ func GetStocks(w http.ResponseWriter, r *http.Request) {
     auth := context.WithValue(context.Background(), finnhub.ContextAPIKey, finnhub.APIKey{
 		Key: os.Getenv("FINNHUB_API_KEY"),
     })
-
-    quote, _, err := finnhubClient.Quote(auth, "TEST")
-	fmt.Printf("%+v\n", quote)
     
-    val, err := rdb.Keys(ctx, "*").Result()
+    keys, err := rdb.Keys(ctx, "*").Result()
     if err == redis.Nil {
         fmt.Println("does not exist")
     } else if err != nil {
         panic(err)
     }
-    json, _ := json.Marshal(val)
 
+    for _, s := range keys {
+        fmt.Println(s)
+        quote, _, _ := finnhubClient.Quote(auth, s)
+        stockQuote := &StockQuote{Name: s, Quote: quote}
+
+        fmt.Printf("%+v\n", stockQuote)
+        json, _ := json.Marshal(stockQuote)
+
+        fmt.Println(string(json))
+    }
+
+    json, _ := json.Marshal(keys)
     fmt.Fprintf(w, "%s", json)
 }
