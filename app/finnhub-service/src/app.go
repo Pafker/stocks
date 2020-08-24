@@ -42,17 +42,14 @@ func GetStocks(w http.ResponseWriter, r *http.Request) {
         panic(err)
     }
 
+    stocks := []StockQuote{}
     for _, s := range keys {
-        fmt.Println(s)
         quote, _, _ := finnhubClient.Quote(auth, s)
         stockQuote := &StockQuote{Name: s, Quote: quote}
 
-        fmt.Printf("%+v\n", stockQuote)
-        json, _ := json.Marshal(stockQuote)
-
-        fmt.Println(string(json))
+        stocks = append(stocks, *stockQuote)
     }
 
-    json, _ := json.Marshal(keys)
+    json, _ := json.Marshal(stocks)
     fmt.Fprintf(w, "%s", json)
 }
