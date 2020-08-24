@@ -16,6 +16,7 @@ var ctx = context.Background()
 type StockQuote struct {
     Name string `json:"name"`
     Quote finnhub.Quote `json:"quote"`
+    Change float32 `json:"change"`
 }
 
 func main() {
@@ -45,7 +46,9 @@ func GetStocks(w http.ResponseWriter, r *http.Request) {
     stocks := []StockQuote{}
     for _, s := range keys {
         quote, _, _ := finnhubClient.Quote(auth, s)
-        stockQuote := &StockQuote{Name: s, Quote: quote}
+        change := ( quote.C - quote.O ) * 100 / quote.O 
+        
+        stockQuote := &StockQuote{Name: s, Quote: quote, Change: change}
 
         stocks = append(stocks, *stockQuote)
     }

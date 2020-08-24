@@ -61,7 +61,7 @@ export class ViewRenderer {
                             let header = table.createTHead();
                             let headerRow = header.insertRow(0);
 
-                            const cells = ["Stock name", "Opening price", "Current price", "Action"];
+                            const cells = ["Stock name", "Opening price", "Current price", "Change", "Action"];
                             let cell;
                             cells.forEach((c) => {
                                 cell = headerRow.insertCell();
@@ -71,7 +71,7 @@ export class ViewRenderer {
                             for (let element of body) {
                                 let row = table.insertRow();
                                 
-                                const elements = [element.name, element.quote.o || 0, element.quote.c || 0];
+                                const elements = [element.name, element.quote.o || 0, element.quote.c || 0, \`\${element.change.toFixed(2)} %\`];
                                 let cell, text;
                                 elements.forEach((e) => {
                                     cell = row.insertCell();
