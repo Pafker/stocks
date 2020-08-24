@@ -12,17 +12,17 @@ export class ViewRenderer {
 
                     table, th, td {
                         border: 1px solid black;
+                        padding: 10px 10px 10px 10px;
                     }
 
                     h1 {
-                        color: red;
+                        color: black;
                     }
                     </style>
                     <title>Stocks</title>
                 </head>
                 <body onload="getStocks()">
                     <h1>Stocks</h1>
-                    <p>Stocks website</p>
                     <br>
 
                     <label for="stockName">Stock name:</label><br>
@@ -58,28 +58,42 @@ export class ViewRenderer {
                         })
                         .then(function (body) {
                             let table = document.querySelector("table");
+                            let header = table.createTHead();
+                            let headerRow = header.insertRow(0);
+
+                            const cells = ["Stock name", "Opening price", "Current price", "Action"];
+                            let cell;
+                            cells.forEach((c) => {
+                                cell = headerRow.insertCell();
+                                cell.innerHTML = \`<b>\${c}</b>\`;
+                            })
 
                             for (let element of body) {
                                 let row = table.insertRow();
-                                let cell = row.insertCell();
-                                let text = document.createTextNode(element);
-                                cell.appendChild(text);
+                                
+                                const elements = [element.name, element.quote.o || 0, element.quote.c || 0];
+                                let cell, text;
+                                elements.forEach((e) => {
+                                    cell = row.insertCell();
+                                    text = document.createTextNode(e);
+                                    cell.appendChild(text);
+                                })
 
-                                let cell2 = row.insertCell();
+                                let actionCell = row.insertCell();
                                 let button = document.createElement('button');
                                 button.textContent = 'remove';
                                 button.onclick = function(){
                                     const opts = {
                                         method: 'DELETE',
                                     };
-                                    fetch('/stocks/' + element, opts).then(function (response) {
+                                    fetch('/stocks/' + element.name, opts).then(function (response) {
                                         location.reload();
                                         return;
                                     });
 
                                     return false;
                                 };
-                                cell2.appendChild(button);
+                                actionCell.appendChild(button);
                             }
                         });
                     }
